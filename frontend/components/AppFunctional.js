@@ -113,7 +113,7 @@ export default function AppFunctional(props) {
       steps: steps,
       email: email,
     };
-
+    setEmail(initialEmail);
     axios
       .post("http://localhost:9000/api/result", payload)
       .then(function (response) {

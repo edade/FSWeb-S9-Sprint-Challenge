@@ -41,6 +41,10 @@ export default function AppFunctional(props) {
 
   function reset() {
     // Tüm stateleri başlangıç ​​değerlerine sıfırlamak için bu helperı kullanın.
+    setMessage(initialMessage);
+    setEmail(initialEmail);
+    setSteps(initialSteps);
+    setIndex(initialIndex);
   }
 
   function sonrakiIndex(yon) {
@@ -153,7 +157,7 @@ export default function AppFunctional(props) {
         <button onClick={sonrakiIndex} id="down">
           AŞAĞI
         </button>
-        <button id="reset">reset</button>
+        <button onClick={reset} id="reset">reset</button>
       </div>
       <form onSubmit={onSubmit}>
         <input value={email} onChange={onChange} id="email" type="email" placeholder="email girin"></input>

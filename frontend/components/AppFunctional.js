@@ -1,12 +1,17 @@
-import React from 'react'
+import React, { useState } from "react";
 
 // önerilen başlangıç stateleri
-const initialMessage = ''
-const initialEmail = ''
-const initialSteps = 0
-const initialIndex = 4 //  "B" nin bulunduğu indexi
+const initialMessage = "";
+const initialEmail = "";
+const initialSteps = 0;
+const initialIndex = 4; //  "B" nin bulunduğu indexi
 
 export default function AppFunctional(props) {
+  const [index, setIndex] = useState(initialIndex);
+  const [ message, setMessage ] = useState(initialMessage);
+  const [ email, setEmail ] = useState(initialEmail);
+  const [ steps, setSteps ] = useState(initialSteps);
+  
   // AŞAĞIDAKİ HELPERLAR SADECE ÖNERİDİR.
   // Bunları silip kendi mantığınızla sıfırdan geliştirebilirsiniz.
 
@@ -29,6 +34,47 @@ export default function AppFunctional(props) {
     // Bu helper bir yön ("sol", "yukarı", vb.) alır ve "B" nin bir sonraki indeksinin ne olduğunu hesaplar.
     // Gridin kenarına ulaşıldığında başka gidecek yer olmadığı için,
     // şu anki indeksi değiştirmemeli.
+
+    switch (yon.target.id) {
+      case "up":
+        if (index < 3) {
+          setMessage("Yukarıya gidemezsiniz");
+          break;
+        }
+        setIndex(index - 3);
+        setMessage("");
+        setSteps(steps + 1);
+
+        break;
+      case "right":
+        if (index % 3 == 2) {
+          setMessage("Sağa gidemezsiniz");
+          break;
+        }
+        setIndex(index + 1);
+        setMessage("");
+        setSteps(steps + 1);
+        break;
+      case "down":
+        if (index >= 6) {
+          setMessage("Aşağıya gidemezsiniz");
+          break;
+        }
+        setIndex(index + 3);
+        setMessage("");
+        setSteps(steps + 1);
+        break;
+
+      case "left":
+        if (index % 3 == 0) {
+          setMessage("Sola gidemezsiniz");
+          break;
+        }
+        setIndex(index - 1);
+        setMessage("");
+        setSteps(steps + 1);
+        break;
+    }
   }
 
   function ilerle(evt) {
@@ -48,25 +94,31 @@ export default function AppFunctional(props) {
     <div id="wrapper" className={props.className}>
       <div className="info">
         <h3 id="coordinates">Koordinatlar (2, 2)</h3>
-        <h3 id="steps">0 kere ilerlediniz</h3>
+        <h3 id="steps">{steps} kere ilerlediniz</h3>
       </div>
       <div id="grid">
-        {
-          [0, 1, 2, 3, 4, 5, 6, 7, 8].map(idx => (
-            <div key={idx} className={`square${idx === 4 ? ' active' : ''}`}>
-              {idx === 4 ? 'B' : null}
-            </div>
-          ))
-        }
+        {[0, 1, 2, 3, 4, 5, 6, 7, 8].map((idx) => (
+          <div key={idx} className={`square${idx === index ? " active" : ""}`}>
+            {idx === index ? "B" : null}
+          </div>
+        ))}
       </div>
       <div className="info">
-        <h3 id="message"></h3>
+        <h3 id="message">{message}</h3>
       </div>
       <div id="keypad">
-        <button id="left">SOL</button>
-        <button id="up">YUKARI</button>
-        <button id="right">SAĞ</button>
-        <button id="down">AŞAĞI</button>
+        <button onClick={sonrakiIndex} id="left">
+          SOL
+        </button>
+        <button onClick={sonrakiIndex} id="up">
+          YUKARI
+        </button>
+        <button onClick={sonrakiIndex} id="right">
+          SAĞ
+        </button>
+        <button onClick={sonrakiIndex} id="down">
+          AŞAĞI
+        </button>
         <button id="reset">reset</button>
       </div>
       <form>
@@ -74,5 +126,5 @@ export default function AppFunctional(props) {
         <input id="submit" type="submit"></input>
       </form>
     </div>
-  )
+  );
 }

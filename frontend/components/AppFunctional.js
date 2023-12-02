@@ -1,3 +1,4 @@
+import axios from "axios";
 import React, { useState } from "react";
 
 // önerilen başlangıç stateleri
@@ -18,6 +19,18 @@ export default function AppFunctional(props) {
   function getXY() {
     // Koordinatları izlemek için bir state e sahip olmak gerekli değildir.
     // Bunları hesaplayabilmek için "B" nin hangi indexte olduğunu bilmek yeterlidir.
+    const coordinates = [
+      "(1, 1)",
+      "(2, 1)",
+      "(3, 1)",
+      "(1, 2)",
+      "(2, 2)",
+      "(3, 2)",
+      "(1, 3)",
+      "(2, 3)",
+      "(3, 3)",
+    ];
+    return coordinates[index];
   }
 
   function getXYMesaj() {
@@ -84,16 +97,37 @@ export default function AppFunctional(props) {
 
   function onChange(evt) {
     // inputun değerini güncellemek için bunu kullanabilirsiniz
+    setEmail(evt.target.value)
   }
 
   function onSubmit(evt) {
+    evt.preventDefault();
     // payloadu POST etmek için bir submit handlera da ihtiyacınız var.
+    const payload = {
+      x: getXY().slice(1, 2),
+      y: getXY().slice(4, 5),
+      steps: steps,
+      email: email,
+    };
+
+    axios
+      .post("http://localhost:9000/api/result", payload)
+      .then(function (response) {
+        console.log(response);
+        setMessage(response.data.message);
+      })
+      .catch(function (error) {
+        console.log(error);
+        setMessage(error.response.data.message);
+      });
+
+
   }
 
   return (
     <div id="wrapper" className={props.className}>
       <div className="info">
-        <h3 id="coordinates">Koordinatlar (2, 2)</h3>
+        <h3 id="coordinates">Koordinatlar {getXY()}</h3>
         <h3 id="steps">{steps} kere ilerlediniz</h3>
       </div>
       <div id="grid">
@@ -121,8 +155,8 @@ export default function AppFunctional(props) {
         </button>
         <button id="reset">reset</button>
       </div>
-      <form>
-        <input id="email" type="email" placeholder="email girin"></input>
+      <form onSubmit={onSubmit}>
+        <input value={email} onChange={onChange} id="email" type="email" placeholder="email girin"></input>
         <input id="submit" type="submit"></input>
       </form>
     </div>
